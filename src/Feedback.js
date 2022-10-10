@@ -98,6 +98,10 @@ export default function Feedback(argument) {
           key={`pin-${pinUniqueKey.toString()}`}
           offsetLeft={pinLeftOffset}
           offsetTop={pinTopOffset}
+          offsetLeftStart={pinLeftOffset - 12}
+          offsetLeftEnd={pinLeftOffset + 12}
+          offsetTopStart={pinTopOffset - 12}
+          offsetTopEnd={pinTopOffset + 12}
           number={pinUniqueKey + 1}
         />,
       ]);
