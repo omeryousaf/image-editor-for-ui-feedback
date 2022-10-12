@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 import CommentModel from "./Components/Comments/CommentModel.js";
-import { checkCoordinates } from "./Functions";
+import { checkPinExistence } from "./CommentPin";
 
 const useStyles = makeStyles((theme) => ({
   draftWrapper: {
@@ -86,22 +86,23 @@ export default function Feedback(argument) {
       imageScrollOwnerRef.current.scrollTop -
       imageParentRef.current.offsetTop;
 
-    const checkCoordinate = checkCoordinates(
+    const pinExist = checkPinExistence(
       commentPins,
       pinLeftOffset,
       pinTopOffset
     );
-    if(checkCoordinate){
+
+    if(pinExist === -1){
       setCommentPins((oldArray) => [
         ...oldArray,
         <CommentPin
           key={`pin-${pinUniqueKey.toString()}`}
           offsetLeft={pinLeftOffset}
           offsetTop={pinTopOffset}
-          offsetLeftStart={pinLeftOffset - 12}
-          offsetLeftEnd={pinLeftOffset + 12}
-          offsetTopStart={pinTopOffset - 12}
-          offsetTopEnd={pinTopOffset + 12}
+          offsetLeftStart={pinLeftOffset - 24}
+          offsetLeftEnd={pinLeftOffset + 24}
+          offsetTopStart={pinTopOffset - 24}
+          offsetTopEnd={pinTopOffset + 24}
           number={pinUniqueKey + 1}
         />,
       ]);
