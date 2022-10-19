@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 import CommentModel from "./Components/Comments/CommentModel.js";
@@ -68,7 +68,6 @@ export default function Feedback(argument) {
   const [pinUniqueKey, setPinUniqueKey] = useState(0);
   const imageParentRef = useRef(null);
   const imageScrollOwnerRef = useRef(null);
-
   const onFileChange = (event) => {
     setCommentPins([]);
     setImagePath(URL.createObjectURL(event.target.files[0]));
@@ -92,22 +91,32 @@ export default function Feedback(argument) {
       pinTopOffset
     );
 
-    if(pinExist === -1){
-      setCommentPins((oldArray) => [
-        ...oldArray,
-        <CommentPin
-          key={`pin-${pinUniqueKey.toString()}`}
-          offsetLeft={pinLeftOffset}
-          offsetTop={pinTopOffset}
-          offsetLeftStart={pinLeftOffset - 24}
-          offsetLeftEnd={pinLeftOffset + 24}
-          offsetTopStart={pinTopOffset - 24}
-          offsetTopEnd={pinTopOffset + 24}
-          number={pinUniqueKey + 1}
-        />,
-      ]);
+    if (pinExist === -1) {
+      if(commentPins.length > 0 ){
+        commentPins.forEach((el)=>{el.selected = false})
+      }
+      const addPin = {
+        pinTopOffset,
+        pinLeftOffset,
+        key: `pin-${pinUniqueKey.toString()}`,
+        offsetLeftStart: pinLeftOffset - 24,
+        offsetLeftEnd: pinLeftOffset + 24,
+        offsetTopStart: pinTopOffset - 24,
+        offsetTopEnd: pinTopOffset + 24,
+        number: pinUniqueKey + 1,
+        selected: true,
+      };
+
+
+
+      setCommentPins((oldArray) => [...oldArray, addPin]);
       // increment pin key to be used for identifying next pin uniquely for the rendering loop
       setPinUniqueKey(pinUniqueKey + 1);
+    } else {
+      let result = commentPins.map((el, i) =>
+        i === pinExist ? { ...el, selected: true } : { ...el, selected: false }
+      );
+      setCommentPins([...result]);
     }
   };
 
@@ -133,7 +142,19 @@ export default function Feedback(argument) {
                 className={`${classes.restrictDimensions} ${classes.displayBlock}`}
               />
               <svg className="overlay" width="100%" height="100%">
-                {commentPins}
+                {commentPins.map((item, i) => (
+                  <CommentPin
+                    key={item.key}
+                    offsetLeft={item.pinLeftOffset}
+                    offsetTop={item.pinTopOffset}
+                    offsetLeftStart={item.offsetLeftStart}
+                    offsetLeftEnd={item.offsetLeftEnd}
+                    offsetTopStart={item.offsetTopStart}
+                    offsetTopEnd={item.offsetTopEnd}
+                    number={item.number}
+                    selected={item.selected}
+                  />
+                ))}
               </svg>
             </div>
           ) : null}
