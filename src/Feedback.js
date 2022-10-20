@@ -85,29 +85,37 @@ export default function Feedback(argument) {
       imageScrollOwnerRef.current.scrollTop -
       imageParentRef.current.offsetTop;
 
-    const pinExist = checkPinExistence(
-      commentPins,
-      pinLeftOffset,
-      pinTopOffset
-    );
-
-    if (pinExist === -1) {
-      setCommentPins((oldArray) => [
-        ...oldArray,
-        <CommentPin
-          key={`pin-${pinUniqueKey.toString()}`}
-          offsetLeft={pinLeftOffset}
-          offsetTop={pinTopOffset}
-          offsetLeftStart={pinLeftOffset - 24}
-          offsetLeftEnd={pinLeftOffset + 24}
-          offsetTopStart={pinTopOffset - 24}
-          offsetTopEnd={pinTopOffset + 24}
-          number={pinUniqueKey + 1}
-        />,
-      ]);
-      // increment pin key to be used for identifying next pin uniquely for the rendering loop
-      setPinUniqueKey(pinUniqueKey + 1);
-    }
+      if (commentPins.length === 0) {
+        const newPin = {
+          pinLeftOffset,
+          pinTopOffset,
+          key: `pin-${pinUniqueKey.toString()}`,
+          number: pinUniqueKey + 1,
+        };
+        setCommentPins((oldArray) => [...oldArray, newPin]);
+        // increment pin key to be used for identifying next pin uniquely for the rendering loop
+        setPinUniqueKey(pinUniqueKey + 1);
+      }else{
+        const pinIndex = commentPins.findIndex((o) => {
+          return (
+            pinLeftOffset >= (o.pinLeftOffset - 24) &&
+            pinLeftOffset <= (o.pinLeftOffset + 24) &&
+            pinTopOffset >= (o.pinTopOffset - 24) &&
+            pinTopOffset <= (o.pinTopOffset + 24)
+          );
+          });
+          if(pinIndex === -1){
+            const newPin = {
+              pinLeftOffset,
+              pinTopOffset,
+              key: `pin-${pinUniqueKey.toString()}`,
+              number: pinUniqueKey + 1,
+            };
+            setCommentPins((oldArray) => [...oldArray, newPin]);
+            // increment pin key to be used for identifying next pin uniquely for the rendering loop
+            setPinUniqueKey(pinUniqueKey + 1);
+          }
+      }
   };
 
   return (
@@ -132,7 +140,14 @@ export default function Feedback(argument) {
                 className={`${classes.restrictDimensions} ${classes.displayBlock}`}
               />
               <svg className="overlay" width="100%" height="100%">
-                {commentPins}
+                {commentPins.map((item) => (
+                  <CommentPin
+                    key={item.key}
+                    offsetLeft={item.pinLeftOffset}
+                    offsetTop={item.pinTopOffset}
+                    number={item.number}
+                  />
+                ))}
               </svg>
             </div>
           ) : null}
