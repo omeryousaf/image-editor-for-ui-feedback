@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
-import CommentModel from "./Components/Comments/CommentModel.js";
 import { checkPinExistence } from "./CommentPin";
 
 const useStyles = makeStyles((theme) => ({
@@ -92,7 +91,7 @@ export default function Feedback(argument) {
       pinTopOffset
     );
 
-    if(pinExist === -1){
+    if (pinExist === -1) {
       setCommentPins((oldArray) => [
         ...oldArray,
         <CommentPin
@@ -138,9 +137,7 @@ export default function Feedback(argument) {
             </div>
           ) : null}
         </div>
-        <div className={classes.magenta}>
-          {pinUniqueKey > 0 && <CommentModel pinKey={pinUniqueKey} />}
-        </div>
+        <div className={classes.magenta}>Note Panel</div>
       </div>
     </div>
   );
