@@ -74,47 +74,24 @@ export default function Feedback(argument) {
 
   const onClickToAddNewPin = (event) => {
     // pin left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
-    const pinLeftOffset =
+    const newPinLeftOffset =
       event.clientX +
       imageScrollOwnerRef.current.scrollLeft -
       imageParentRef.current.offsetLeft;
     // pin top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
-    const pinTopOffset =
+    const newPinTopOffset =
       event.clientY +
       imageScrollOwnerRef.current.scrollTop -
       imageParentRef.current.offsetTop;
-
-      if (commentPins.length === 0) {
-        const newPin = {
-          pinLeftOffset,
-          pinTopOffset,
-          key: `pin-${pinUniqueKey.toString()}`,
-          number: pinUniqueKey + 1,
-        };
-        setCommentPins((oldArray) => [...oldArray, newPin]);
-        // increment pin key to be used for identifying next pin uniquely for the rendering loop
-        setPinUniqueKey(pinUniqueKey + 1);
-      }else{
-        const pinIndex = commentPins.findIndex((o) => {
-          return (
-            pinLeftOffset >= (o.pinLeftOffset - 24) &&
-            pinLeftOffset <= (o.pinLeftOffset + 24) &&
-            pinTopOffset >= (o.pinTopOffset - 24) &&
-            pinTopOffset <= (o.pinTopOffset + 24)
-          );
-          });
-          if(pinIndex === -1){
-            const newPin = {
-              pinLeftOffset,
-              pinTopOffset,
-              key: `pin-${pinUniqueKey.toString()}`,
-              number: pinUniqueKey + 1,
-            };
-            setCommentPins((oldArray) => [...oldArray, newPin]);
-            // increment pin key to be used for identifying next pin uniquely for the rendering loop
-            setPinUniqueKey(pinUniqueKey + 1);
-          }
-      }
+    const newPin = {
+      leftOffset: newPinLeftOffset,
+      topOffset: newPinTopOffset,
+      key: `pin-${pinUniqueKey.toString()}`,
+      number: pinUniqueKey + 1
+    };
+    setCommentPins((oldArray) => [...oldArray, newPin]);
+    // increment pin key to be used for identifying next pin uniquely for the rendering loop
+    setPinUniqueKey(pinUniqueKey + 1);
   };
 
   return (
@@ -139,12 +116,12 @@ export default function Feedback(argument) {
                 className={`${classes.restrictDimensions} ${classes.displayBlock}`}
               />
               <svg className="overlay" width="100%" height="100%">
-                {commentPins.map((item) => (
+                {commentPins.map((pin) => (
                   <CommentPin
-                    key={item.key}
-                    offsetLeft={item.pinLeftOffset}
-                    offsetTop={item.pinTopOffset}
-                    number={item.number}
+                    key={pin.key}
+                    offsetLeft={pin.leftOffset}
+                    offsetTop={pin.topOffset}
+                    number={pin.number}
                   />
                 ))}
               </svg>
