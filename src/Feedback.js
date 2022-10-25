@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 
@@ -66,7 +66,6 @@ export default function Feedback(argument) {
   const [pinUniqueKey, setPinUniqueKey] = useState(0);
   const imageParentRef = useRef(null);
   const imageScrollOwnerRef = useRef(null);
-
   const onFileChange = (event) => {
     setCommentPins([]);
     setImagePath(URL.createObjectURL(event.target.files[0]));
