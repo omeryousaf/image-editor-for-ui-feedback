@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 
@@ -72,6 +72,10 @@ export default function Feedback(argument) {
   };
 
   const onClickToAddNewPin = (event) => {
+    if(commentPins.length > 0){
+      var result = commentPins.map(pin => pin.selected === true ? {...pin, selected: false} : pin);
+      setCommentPins(result);
+    }
     // pin left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
     const newPinLeftOffset =
       event.clientX +
@@ -86,13 +90,17 @@ export default function Feedback(argument) {
       leftOffset: newPinLeftOffset,
       topOffset: newPinTopOffset,
       key: `pin-${pinUniqueKey.toString()}`,
-      number: pinUniqueKey + 1
+      number: pinUniqueKey + 1,
+      selected: true,
     };
     setCommentPins((oldArray) => [...oldArray, newPin]);
     // increment pin key to be used for identifying next pin uniquely for the rendering loop
     setPinUniqueKey(pinUniqueKey + 1);
   };
-
+  const makeSelected = (pinNumber) => {
+    const result = commentPins.map((pin) => pin.number === pinNumber ? { ...pin, selected: true } : { ...pin, selected: false });
+    setCommentPins(result);
+  };
   return (
     <div className={classes.draftWrapper}>
       <div className={classes.feedbackContainerHeader}>
@@ -121,6 +129,8 @@ export default function Feedback(argument) {
                     offsetLeft={pin.leftOffset}
                     offsetTop={pin.topOffset}
                     number={pin.number}
+                    selected={pin.selected}
+                    onSelect={makeSelected}
                   />
                 ))}
               </svg>
