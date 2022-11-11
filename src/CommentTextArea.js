@@ -3,7 +3,8 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  flow: { overflow: "visible" },
+  foreignObject: { overflow: "visible" },
+  textarea:{cursor:"all-scroll"}
 }));
 
 const CommentTextArea = (props) => {
@@ -16,8 +17,12 @@ const CommentTextArea = (props) => {
     props.dragEnd(props.number, event);
   };
   return (
-    <foreignObject x={props.offsetLeft} y={props.offsetTop} className={classes.flow}>
-      <textarea onClick={onClick} draggable="true" onDragEnd={handleDragEnd} />
+    <foreignObject
+      x={props.offsetLeft}
+      y={props.offsetTop}
+      className={classes.foreignObject}
+    >
+      <textarea onClick={onClick} draggable="true" onDragEnd={handleDragEnd} className={classes.textarea} />
     </foreignObject>
   );
 };
