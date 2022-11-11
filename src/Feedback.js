@@ -73,7 +73,6 @@ export default function Feedback(argument) {
     setCommentPins([]);
     setImagePath(URL.createObjectURL(event.target.files[0]));
   };
-  useEffect(() => {console.log(selectedPointer)}, [selectedPointer]);
   const onClickToAddNewPin = (event) => {
     if (commentPins.length > 0) {
       var result = commentPins.map((pin) =>
