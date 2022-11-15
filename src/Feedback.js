@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 import CommentTextArea from "./CommentTextArea.js";
@@ -69,7 +69,6 @@ export default function Feedback(argument) {
   const imageParentRef = useRef(null);
   const imageScrollOwnerRef = useRef(null);
   const onFileChange = (event) => {
-    console.log('On file Change');
     setCommentPins([]);
     setImagePath(URL.createObjectURL(event.target.files[0]));
   };
@@ -96,6 +95,7 @@ export default function Feedback(argument) {
       key: `pin-${pinUniqueKey.toString()}`,
       number: pinUniqueKey + 1,
       selected: true,
+      type: { selectedPointer },
     };
     setCommentPins((oldArray) => [...oldArray, newPin]);
     // increment pin key to be used for identifying next pin uniquely for the rendering loop
@@ -163,25 +163,27 @@ export default function Feedback(argument) {
                 className={`${classes.restrictDimensions} ${classes.displayBlock}`}
               />
               <svg className="overlay" width="100%" height="100%">
-                {commentPins.map((pin) => (
-                  selectedPointer === "Pin" ? 
-                  <CommentPin
-                    key={pin.key}
-                    offsetLeft={pin.leftOffset}
-                    offsetTop={pin.topOffset}
-                    number={pin.number}
-                    selected={pin.selected}
-                    onSelect={makeSelected}
-                    dragEnd={onDragEnd}
-                  /> :
-                  <CommentTextArea
-                    key={pin.key}
-                    number={pin.number}
-                    offsetTop={pin.topOffset}
-                    offsetLeft={pin.leftOffset}
-                    dragEnd={onDragEnd}
-                  />
-                ))}
+                {commentPins.map((pin) =>
+                  pin.type.selectedPointer === "Pin" ? (
+                    <CommentPin
+                      key={pin.key}
+                      offsetLeft={pin.leftOffset}
+                      offsetTop={pin.topOffset}
+                      number={pin.number}
+                      selected={pin.selected}
+                      onSelect={makeSelected}
+                      dragEnd={onDragEnd}
+                    />
+                  ) : (
+                    <CommentTextArea
+                      key={pin.key}
+                      number={pin.number}
+                      offsetTop={pin.topOffset}
+                      offsetLeft={pin.leftOffset}
+                      dragEnd={onDragEnd}
+                    />
+                  )
+                )}
               </svg>
             </div>
           ) : null}
