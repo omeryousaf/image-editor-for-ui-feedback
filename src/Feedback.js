@@ -58,6 +58,24 @@ const useStyles = makeStyles((theme) => ({
   displayBlock: {
     display: "block",
   },
+  button: {
+    backgroundColor: "#359139",
+    border: "none",
+    color: "white",
+    padding: "5px",
+    textAlign: "center",
+    textDecoration: "none",
+    fontSize: "13px",
+    margin: "4px 2px",
+    borderRadius: "4px",
+    cursor: "pointer",
+  },
+  textAlignCenter: {
+    textAlign: "center",
+  },
+  selected: {
+    border: "2px solid black",
+  },
 }));
 
 export default function Feedback(argument) {
@@ -137,15 +155,20 @@ export default function Feedback(argument) {
       </div>
       <div className={classes.draftBody}>
         <div className={classes.magenta}>
-          <select
-            name="selectedPointer"
-            id="selectedPointer"
-            onChange={(e) => setSelectedPointer(e.target.value)}
-            defaultValue={selectedPointer}
-          >
-            <option value="Textarea">Textarea</option>
-            <option value="Pin">Pin</option>
-          </select>
+          <div className={classes.textAlignCenter}>
+            <button
+              className={ selectedPointer === "Pin" ? `${classes.button} ${classes.selected}`: `${classes.button}`}
+              onClick={() => setSelectedPointer("Pin")}
+            >
+              Pin
+            </button>
+            <button
+              className={ selectedPointer === "Textarea" ? `${classes.button} ${classes.selected}`: `${classes.button}`}
+              onClick={() => setSelectedPointer("Textarea")}
+            >
+              Text
+            </button>
+          </div>
         </div>
         <div
           className={`${classes.cyan} ${classes.displayFlex} ${classes.scrollAuto}`}
