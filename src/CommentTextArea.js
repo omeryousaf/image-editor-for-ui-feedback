@@ -3,8 +3,8 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  foreignObject: { overflow: "visible" },
-  textarea:{cursor:"all-scroll"}
+  foreignObject: { overflow: "visible", width: "1px", height: "1px" },
+  textarea: { cursor: "all-scroll" },
 }));
 
 const CommentTextArea = (props) => {
@@ -22,7 +22,12 @@ const CommentTextArea = (props) => {
       y={props.offsetTop}
       className={classes.foreignObject}
     >
-      <textarea onClick={onClick} draggable="true" onDragEnd={handleDragEnd} className={classes.textarea} />
+      <textarea
+        onClick={onClick}
+        draggable="true"
+        onDragEnd={handleDragEnd}
+        className={classes.textarea}
+      />
     </foreignObject>
   );
 };
