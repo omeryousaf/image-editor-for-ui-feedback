@@ -82,7 +82,8 @@ export default function Feedback(argument) {
   const classes = useStyles();
   const [imagePath, setImagePath] = useState(null);
   const [commentPins, setCommentPins] = useState([]);
-  const [pinUniqueKey, setPinUniqueKey] = useState(0);
+  const [pinUniqueKey] = useState(0);
+  const [number, setNumber] = useState(0);
   const [selectedPointer, setSelectedPointer] = useState("Textarea");
   const imageParentRef = useRef(null);
   const imageScrollOwnerRef = useRef(null);
@@ -110,14 +111,14 @@ export default function Feedback(argument) {
     const newPin = {
       leftOffset: newPinLeftOffset,
       topOffset: newPinTopOffset,
-      key: `pin-${pinUniqueKey.toString()}`,
-      number: pinUniqueKey + 1,
+      key: `pin-${pinUniqueKey.toString()}`, 
+      number: number + 1 ,
       selected: true,
-      type: { selectedPointer },
+      type: selectedPointer ,
     };
     setCommentPins((oldArray) => [...oldArray, newPin]);
     // increment pin key to be used for identifying next pin uniquely for the rendering loop
-    setPinUniqueKey(pinUniqueKey + 1);
+    setNumber(selectedPointer === "Pin" ? number + 1 : number + 0);
   };
 
   const makeSelected = (pinNumber) => {
@@ -187,7 +188,7 @@ export default function Feedback(argument) {
               />
               <svg className="overlay" width="100%" height="100%">
                 {commentPins.map((pin) =>
-                  pin.type.selectedPointer === "Pin" ? (
+                  pin.type === "Pin" ? (
                     <CommentPin
                       key={pin.key}
                       offsetLeft={pin.leftOffset}
