@@ -133,19 +133,19 @@ export default function Feedback(argument) {
 
   const onDragEnd = (elID, event) => {
     // pin left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
-    const newPinLeftOffset =
+    const updatedLeftOffset =
       event.clientX +
       imageScrollOwnerRef.current.scrollLeft -
       imageParentRef.current.offsetLeft;
     // pin top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
-    const newPinTopOffset =
+    const updatedTopOffset =
       event.clientY +
       imageScrollOwnerRef.current.scrollTop -
       imageParentRef.current.offsetTop;
 
     const result = commentPins.map((pin) =>
       pin.id === elID
-        ? { ...pin, leftOffset: newPinLeftOffset, topOffset: newPinTopOffset }
+        ? { ...pin, leftOffset: updatedLeftOffset, topOffset: updatedTopOffset }
         : { ...pin }
     );
     setCommentPins(result);
