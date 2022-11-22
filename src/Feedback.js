@@ -82,7 +82,7 @@ export default function Feedback(argument) {
   const classes = useStyles();
   const [imagePath, setImagePath] = useState(null);
   const [commentPins, setCommentPins] = useState([]);
-  const [pinUniqueKey, setPinUniqueKey] = useState(0);
+  const [elementID, setElementID] = useState(0);
   const [number, setNumber] = useState(0);
   const [selectedPointer, setSelectedPointer] = useState("Textarea");
   const imageParentRef = useRef(null);
@@ -111,14 +111,14 @@ export default function Feedback(argument) {
     const newPin = {
       leftOffset: newPinLeftOffset,
       topOffset: newPinTopOffset,
-      key: `pin-${pinUniqueKey.toString()}`,
+      id: `el-${elementID.toString()}`,
       number: number + 1,
       selected: true,
       type: selectedPointer,
     };
     setCommentPins((oldArray) => [...oldArray, newPin]);
     // increment pin key to be used for identifying next pin uniquely for the rendering loop
-    setPinUniqueKey(pinUniqueKey + 1)
+    setElementID(elementID + 1)
     setNumber(selectedPointer === "Pin" ? number + 1 : number + 0);
   };
 
@@ -131,7 +131,7 @@ export default function Feedback(argument) {
     setCommentPins(result);
   };
 
-  const onDragEnd = (pinNumber, event) => {
+  const onDragEnd = (elID, event) => {
     // pin left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
     const newPinLeftOffset =
       event.clientX +
@@ -144,7 +144,7 @@ export default function Feedback(argument) {
       imageParentRef.current.offsetTop;
 
     const result = commentPins.map((pin) =>
-      pin.number === pinNumber
+      pin.id === elID
         ? { ...pin, leftOffset: newPinLeftOffset, topOffset: newPinTopOffset }
         : { ...pin }
     );
@@ -191,7 +191,8 @@ export default function Feedback(argument) {
                 {commentPins.map((pin) =>
                   pin.type === "Pin" ? (
                     <CommentPin
-                      key={pin.key}
+                      key={pin.id}
+                      id={pin.id}
                       offsetLeft={pin.leftOffset}
                       offsetTop={pin.topOffset}
                       number={pin.number}
@@ -201,7 +202,8 @@ export default function Feedback(argument) {
                     />
                   ) : (
                     <CommentTextArea
-                      key={pin.key}
+                      key={pin.id}
+                      id={pin.id}
                       number={pin.number}
                       offsetTop={pin.topOffset}
                       offsetLeft={pin.leftOffset}

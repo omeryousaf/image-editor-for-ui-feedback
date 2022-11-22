@@ -21,9 +21,9 @@ export default function CommentPin(props) {
     props.onSelect(props.number)
     event.stopPropagation();
   }
-	
-	return(
-		<g onClick={onClick}>
+
+  return (
+    <g onClick={onClick}>
       <circle
         cx={props.offsetLeft}
         cy={props.offsetTop}
@@ -34,6 +34,6 @@ export default function CommentPin(props) {
         x={props.offsetLeft}
         y={props.offsetTop + 5}
         className={classes.numberLabel}>{props.number.toString().padStart(2, 0)}</text>
-		</g>
-		);
+    </g>
+  );
 }

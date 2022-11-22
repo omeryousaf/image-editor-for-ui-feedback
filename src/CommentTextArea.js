@@ -14,7 +14,7 @@ const CommentTextArea = (props) => {
   };
   const handleDragEnd = (event) => {
     event.preventDefault();
-    props.dragEnd(props.number, event);
+    props.dragEnd(props.id, event);
   };
   return (
     <foreignObject
