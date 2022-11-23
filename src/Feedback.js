@@ -159,13 +159,13 @@ export default function Feedback(argument) {
         <div className={classes.magenta}>
           <div className={classes.textAlignCenter}>
             <button
-              className={selectedPointer === "Pin" ? `${classes.button} ${classes.selected}` : `${classes.button}`}
+              className={`${classes.button}  ${selectedPointer === "Pin" ? classes.selected : ''}`}
               onClick={() => setSelectedPointer("Pin")}
             >
               Pin
             </button>
             <button
-              className={selectedPointer === "Textarea" ? `${classes.button} ${classes.selected}` : `${classes.button}`}
+              className={`${classes.button}  ${selectedPointer === "Textarea" ? classes.selected : ''}`}
               onClick={() => setSelectedPointer("Textarea")}
             >
               Text
@@ -198,7 +198,6 @@ export default function Feedback(argument) {
                       number={pin.number}
                       selected={pin.selected}
                       onSelect={makeSelected}
-                      dragEnd={onDragEnd}
                     />
                   ) : (
                     <CommentTextArea
