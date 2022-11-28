@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   displayBlock: {
     display: "block",
   },
-  button: {
+  elBtns: {
     backgroundColor: "#359139",
     border: "none",
     color: "white",
@@ -159,13 +159,13 @@ export default function Feedback(argument) {
         <div className={classes.magenta}>
           <div className={classes.textAlignCenter}>
             <button
-              className={`${classes.button}  ${selectedPointer === "Pin" ? classes.selected : ''}`}
+              className={`${classes.elBtns}  ${selectedPointer === "Pin" ? classes.selected : ''}`}
               onClick={() => setSelectedPointer("Pin")}
             >
               Pin
             </button>
             <button
-              className={`${classes.button}  ${selectedPointer === "Textarea" ? classes.selected : ''}`}
+              className={`${classes.elBtns}  ${selectedPointer === "Textarea" ? classes.selected : ''}`}
               onClick={() => setSelectedPointer("Textarea")}
             >
               Text
