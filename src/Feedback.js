@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   displayBlock: {
     display: "block",
   },
-  button: {
+  elBtns: {
     backgroundColor: "#359139",
     border: "none",
     color: "white",
@@ -81,73 +81,74 @@ const useStyles = makeStyles((theme) => ({
 export default function Feedback(argument) {
   const classes = useStyles();
   const [imagePath, setImagePath] = useState(null);
-  const [commentPins, setCommentPins] = useState([]);
-  const [pinUniqueKey] = useState(0);
+  const [commentElements, setCommentElements] = useState([]);
+  const [elementID, setElementID] = useState(0);
   const [number, setNumber] = useState(0);
   const [selectedPointer, setSelectedPointer] = useState("Textarea");
   const imageParentRef = useRef(null);
   const imageScrollOwnerRef = useRef(null);
   const onFileChange = (event) => {
-    setCommentPins([]);
+    setCommentElements([]);
     setImagePath(URL.createObjectURL(event.target.files[0]));
   };
-  const onClickToAddNewPin = (event) => {
-    if (commentPins.length > 0) {
-      var result = commentPins.map((pin) =>
-        pin.selected === true ? { ...pin, selected: false } : pin
+  const addNewElement = (event) => {
+    if (commentElements.length > 0) {
+      var result = commentElements.map((el) =>
+        el.selected === true ? { ...el, selected: false } : el
       );
-      setCommentPins(result);
+      setCommentElements(result);
     }
     // pin left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
-    const newPinLeftOffset =
+    const newElementLeftOffset =
       event.clientX +
       imageScrollOwnerRef.current.scrollLeft -
       imageParentRef.current.offsetLeft;
     // pin top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
-    const newPinTopOffset =
+    const newElementTopOffset =
       event.clientY +
       imageScrollOwnerRef.current.scrollTop -
       imageParentRef.current.offsetTop;
-    const newPin = {
-      leftOffset: newPinLeftOffset,
-      topOffset: newPinTopOffset,
-      key: `pin-${pinUniqueKey.toString()}`, 
-      number: number + 1 ,
+    const newElement = {
+      leftOffset: newElementLeftOffset,
+      topOffset: newElementTopOffset,
+      id: `el-${elementID.toString()}`,
+      number: number + 1,
       selected: true,
-      type: selectedPointer ,
+      type: selectedPointer,
     };
-    setCommentPins((oldArray) => [...oldArray, newPin]);
-    // increment pin key to be used for identifying next pin uniquely for the rendering loop
+    setCommentElements((oldArray) => [...oldArray, newElement]);
+    // increment element key to be used for identifying next element uniquely for the rendering loop
+    setElementID(elementID + 1)
     setNumber(selectedPointer === "Pin" ? number + 1 : number + 0);
   };
 
   const makeSelected = (pinNumber) => {
-    const result = commentPins.map((pin) =>
-      pin.number === pinNumber
-        ? { ...pin, selected: true }
-        : { ...pin, selected: false }
+    const result = commentElements.map((el) =>
+      el.number === pinNumber
+        ? { ...el, selected: true }
+        : { ...el, selected: false }
     );
-    setCommentPins(result);
+    setCommentElements(result);
   };
 
-  const onDragEnd = (pinNumber, event) => {
-    // pin left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
-    const newPinLeftOffset =
+  const onDragEnd = (elID, event) => {
+    // Element left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
+    const updatedLeftOffset =
       event.clientX +
       imageScrollOwnerRef.current.scrollLeft -
       imageParentRef.current.offsetLeft;
-    // pin top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
-    const newPinTopOffset =
+    // Element top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
+    const updatedTopOffset =
       event.clientY +
       imageScrollOwnerRef.current.scrollTop -
       imageParentRef.current.offsetTop;
 
-    const result = commentPins.map((pin) =>
-      pin.number === pinNumber
-        ? { ...pin, leftOffset: newPinLeftOffset, topOffset: newPinTopOffset }
-        : { ...pin }
+    const result = commentElements.map((el) =>
+      el.id === elID
+        ? { ...el, leftOffset: updatedLeftOffset, topOffset: updatedTopOffset }
+        : { ...el }
     );
-    setCommentPins(result);
+    setCommentElements(result);
   };
   return (
     <div className={classes.draftWrapper}>
@@ -158,13 +159,13 @@ export default function Feedback(argument) {
         <div className={classes.magenta}>
           <div className={classes.textAlignCenter}>
             <button
-              className={ selectedPointer === "Pin" ? `${classes.button} ${classes.selected}`: `${classes.button}`}
+              className={`${classes.elBtns}  ${selectedPointer === "Pin" ? classes.selected : ''}`}
               onClick={() => setSelectedPointer("Pin")}
             >
               Pin
             </button>
             <button
-              className={ selectedPointer === "Textarea" ? `${classes.button} ${classes.selected}`: `${classes.button}`}
+              className={`${classes.elBtns}  ${selectedPointer === "Textarea" ? classes.selected : ''}`}
               onClick={() => setSelectedPointer("Textarea")}
             >
               Text
@@ -178,7 +179,7 @@ export default function Feedback(argument) {
           {imagePath ? (
             <div
               className={`${classes.imageContainer} ${classes.centerAlign}`}
-              onClick={onClickToAddNewPin}
+              onClick={addNewElement}
               ref={imageParentRef}
             >
               <img
@@ -187,23 +188,24 @@ export default function Feedback(argument) {
                 className={`${classes.restrictDimensions} ${classes.displayBlock}`}
               />
               <svg className="overlay" width="100%" height="100%">
-                {commentPins.map((pin) =>
-                  pin.type === "Pin" ? (
+                {commentElements.map((el) =>
+                  el.type === "Pin" ? (
                     <CommentPin
-                      key={pin.key}
-                      offsetLeft={pin.leftOffset}
-                      offsetTop={pin.topOffset}
-                      number={pin.number}
-                      selected={pin.selected}
+                      key={el.id}
+                      id={el.id}
+                      offsetLeft={el.leftOffset}
+                      offsetTop={el.topOffset}
+                      number={el.number}
+                      selected={el.selected}
                       onSelect={makeSelected}
-                      dragEnd={onDragEnd}
                     />
                   ) : (
                     <CommentTextArea
-                      key={pin.key}
-                      number={pin.number}
-                      offsetTop={pin.topOffset}
-                      offsetLeft={pin.leftOffset}
+                      key={el.id}
+                      id={el.id}
+                      number={el.number}
+                      offsetTop={el.topOffset}
+                      offsetLeft={el.leftOffset}
                       dragEnd={onDragEnd}
                     />
                   )
