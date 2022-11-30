@@ -131,17 +131,17 @@ export default function Feedback(argument) {
     setCommentElements(result);
   };
 
-  const onDragEnd = (elID, event, calX, calY) => {
+  const onDragEnd = (elID, event, offsetFromElementLeft, offsetFromElementTop) => {
     // Element left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
     const updatedLeftOffset =
       event.clientX +
       imageScrollOwnerRef.current.scrollLeft -
-      imageParentRef.current.offsetLeft - calX;
+      imageParentRef.current.offsetLeft - offsetFromElementLeft;
     // Element top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
     const updatedTopOffset =
       event.clientY +
       imageScrollOwnerRef.current.scrollTop -
-      imageParentRef.current.offsetTop - calY;
+      imageParentRef.current.offsetTop - offsetFromElementTop;
 
 
     const result = commentElements.map((el) =>

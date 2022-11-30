@@ -8,23 +8,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CommentTextArea = (props) => {
-  const [calX, setCalX] = useState(null)
-  const [calY, setCalY] = useState(null)
+  const [offsetFromElementLeft, setOffsetFromElementLeft] = useState(null)
+  const [offsetFromElementTop, setOffsetFromElementTop] = useState(null)
   const classes = useStyles();
   const onClick = (event) => {
     event.stopPropagation();
   };
   const handleDragStart = (event) => {
-    setCalX((event.clientX + props.imgScrollRef.current.scrollLeft -
+    setOffsetFromElementLeft((event.clientX + props.imgScrollRef.current.scrollLeft -
       props.imgParentRef.current.offsetLeft) - props.offsetLeft)
 
-    setCalY((event.clientY +
+    setOffsetFromElementTop((event.clientY +
       props.imgScrollRef.current.scrollTop -
       props.imgParentRef.current.offsetTop) - props.offsetTop)
   }
   const handleDragEnd = (event) => {
     event.preventDefault();
-    props.dragEnd(props.id, event, calX, calY);
+    props.dragEnd(props.id, event, offsetFromElementLeft, offsetFromElementTop);
   };
   return (
     <foreignObject
