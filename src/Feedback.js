@@ -221,9 +221,9 @@ export default function Feedback(argument) {
           {imagePath ? (
             <div
               className={`${classes.imageContainer} ${classes.centerAlign}`}
-              onClick={e => selectedPointer !== "Line" ? addNewElement(e) : e.preventDefault()}
-              onMouseDown={e => selectedPointer === "Line" ? handleEvent(e) : e.preventDefault()}
-              onMouseUp={e => selectedPointer === "Line" ? handleEvent(e) : e.preventDefault()}
+              onClick={e => selectedPointer !== "Line" ? addNewElement(e) : e.stopPropagation()}
+              onMouseDown={e => selectedPointer === "Line" ? handleEvent(e) : e.stopPropagation()}
+              onMouseUp={e => selectedPointer === "Line" ? handleEvent(e) : e.stopPropagation()}
               ref={imageParentRef}
             >
               <img
