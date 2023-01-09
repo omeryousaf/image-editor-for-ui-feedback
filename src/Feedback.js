@@ -152,32 +152,11 @@ export default function Feedback(argument) {
     );
     setCommentElements(result);
   };
-  const onLineDragEnd = (elID, event, offsetFromElementInitialLeft, offsetFromElementInitialTop, offsetFromElementFinalLeft, offsetFromElementFinalTop) => {
-    // Element left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
-    const updatedInitalLeftOffset =
-      (event.clientX +
-      imageScrollOwnerRef.current.scrollLeft -
-      imageParentRef.current.offsetLeft) - offsetFromElementInitialLeft;
-    // Element top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
-    const updatedInitialTopOffset =
-      (event.clientY +
-      imageScrollOwnerRef.current.scrollTop -
-      imageParentRef.current.offsetTop) - offsetFromElementInitialTop;
-    // Element left offset = x-offset-of-click-from-viewport-left + image-horizontal-scroll-offset-from-left - left-offset-of-image-horizontal-scroll-from-its-start
-    const updatedFinalLeftOffset =
-      (event.clientX +
-      imageScrollOwnerRef.current.scrollLeft -
-      imageParentRef.current.offsetLeft) + offsetFromElementFinalLeft;
-    // Element top offset = y-offset-of-click-from-viewport-top + vertical-scroll-offset-of-image - top-offset-of-image-vertical-scroll-from-its-start
-    const updatedFinalTopOffset =
-      (event.clientY +
-      imageScrollOwnerRef.current.scrollTop -
-      imageParentRef.current.offsetTop) + offsetFromElementFinalTop;
-
+  const onLineDragEnd = (elID, updatedInitialLeft, updatedInitialTop, updatedFinalLeft, updatedFinalTop) => {
 
     const result = commentElements.map((el) =>
       el.id === elID
-        ? { ...el, initialLeftOffset: updatedInitalLeftOffset, initialTopOffset: updatedInitialTopOffset,finalLeftOffset: updatedFinalLeftOffset, finalTopOffset: updatedFinalTopOffset}
+        ? { ...el, initialLeftOffset: updatedInitialLeft, initialTopOffset: updatedInitialTop,finalLeftOffset: updatedFinalLeft, finalTopOffset: updatedFinalTop}
         : { ...el }
     );
     setCommentElements(result);

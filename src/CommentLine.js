@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -8,31 +7,54 @@ const useStyles = makeStyles((theme) => ({
 
 const CommentLine = (props) => {
     const classes = useStyles();
-    const [offsetFromElementInitialLeft, setOffsetFromElementInitialLeft] = useState(null)
-    const [offsetFromElementInitialTop, setOffsetFromElementInitialTop] = useState(null)
-    const [offsetFromElementFinalLeft, setOffsetFromElementFinalLeft] = useState(null)
-    const [offsetFromElementFinalTop, setOffsetFromElementFinalTop] = useState(null)
+    let diffInInitialLeft;
+    let diffInInitialTop;
+    let diffInFinalLeft;
+    let diffInFinalTop;
 
     const onClick = (event) => {
-        console.log('click')
         event.stopPropagation();
     };
+
     const handleDragStart = (event) => {
-        setOffsetFromElementInitialLeft((event.clientX + props.imgScrollRef.current.scrollLeft -
-            props.imgParentRef.current.offsetLeft) - props.initialLeftOffset)
+        
+        diffInInitialLeft = (event.clientX + props.imgScrollRef.current.scrollLeft -
+            props.imgParentRef.current.offsetLeft) - props.initialLeftOffset;
 
-        setOffsetFromElementInitialTop((event.clientY +
-            props.imgScrollRef.current.scrollTop -
-            props.imgParentRef.current.offsetTop) - props.initialTopOffset)
+        diffInInitialTop = (event.clientY + props.imgScrollRef.current.scrollTop -
+            props.imgParentRef.current.offsetTop) - props.initialTopOffset;
 
-        setOffsetFromElementFinalLeft(props.finalLeftOffset - (event.clientX + props.imgScrollRef.current.scrollLeft - props.imgParentRef.current.offsetLeft))
+        diffInFinalLeft = props.finalLeftOffset - (event.clientX + props.imgScrollRef.current.scrollLeft - props.imgParentRef.current.offsetLeft);
 
-        setOffsetFromElementFinalTop(props.finalTopOffset - (event.clientY +
-            props.imgScrollRef.current.scrollTop - props.imgParentRef.current.offsetTop))
+        diffInFinalTop = props.finalTopOffset - (event.clientY +
+            props.imgScrollRef.current.scrollTop - props.imgParentRef.current.offsetTop);
     }
     const handleDragEnd = (event) => {
         event.preventDefault();
-        props.dragEnd(props.id, event, offsetFromElementInitialLeft, offsetFromElementInitialTop, offsetFromElementFinalLeft, offsetFromElementFinalTop);
+
+        const updatedInitialLeft =
+            (event.clientX +
+                props.imgScrollRef.current.scrollLeft -
+                props.imgParentRef.current.offsetLeft) - diffInInitialLeft;
+
+        const updatedInitialTop =
+            (event.clientY +
+                props.imgScrollRef.current.scrollTop -
+                props.imgParentRef.current.offsetTop) - diffInInitialTop;
+
+        const updatedFinalLeft =
+            (event.clientX +
+                props.imgScrollRef.current.scrollLeft -
+                props.imgParentRef.current.offsetLeft) + diffInFinalLeft;
+
+        const updatedFinalTop =
+            (event.clientY +
+                props.imgScrollRef.current.scrollTop -
+                props.imgParentRef.current.offsetTop) + diffInFinalTop;
+
+        props.dragEnd(props.id, updatedInitialLeft, updatedInitialTop, updatedFinalLeft, updatedFinalTop);
+
+
     };
     return (
         <g>
