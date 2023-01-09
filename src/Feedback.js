@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 import CommentTextArea from "./CommentTextArea.js";
-import CommentLine from "./CommentLine.js";
+import CommentLine from "./Line.js";
 
 const useStyles = makeStyles((theme) => ({
   draftWrapper: {
