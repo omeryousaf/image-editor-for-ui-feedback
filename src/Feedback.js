@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CommentPin from "./CommentPin.js";
 import CommentTextArea from "./CommentTextArea.js";
+import CommentLine from "./Line.js";
 
 const useStyles = makeStyles((theme) => ({
   draftWrapper: {
@@ -151,6 +152,50 @@ export default function Feedback(argument) {
     );
     setCommentElements(result);
   };
+  const onLineDragEnd = (elID, updatedInitialLeft, updatedInitialTop, updatedFinalLeft, updatedFinalTop) => {
+
+    const result = commentElements.map((el) =>
+      el.id === elID
+        ? { ...el, initialLeftOffset: updatedInitialLeft, initialTopOffset: updatedInitialTop,finalLeftOffset: updatedFinalLeft, finalTopOffset: updatedFinalTop}
+        : { ...el }
+    );
+    setCommentElements(result);
+  };
+
+  let line = {}
+  const handleEvent = (event) => {
+    if (event.type === 'mousedown') {
+      line = {
+        startX: event.clientX + imageScrollOwnerRef.current.scrollLeft -
+          imageParentRef.current.offsetLeft,
+        startY: event.clientY +
+          imageScrollOwnerRef.current.scrollTop -
+          imageParentRef.current.offsetTop
+      }
+    }
+    if (event.type === 'mouseup') {
+      line = {
+        ...line,
+        endX: event.clientX + imageScrollOwnerRef.current.scrollLeft -
+          imageParentRef.current.offsetLeft,
+        endY: event.clientY +
+          imageScrollOwnerRef.current.scrollTop -
+          imageParentRef.current.offsetTop
+      }
+      const newElement = {
+        initialLeftOffset: line.startX,
+        initialTopOffset: line.startY,
+        finalLeftOffset: line.endX,
+        finalTopOffset: line.endY,
+        id: `el-${elementID.toString()}`,
+        type: selectedPointer,
+      };
+      setCommentElements((oldArray) => [...oldArray, newElement]);
+      // increment element key to be used for identifying next element uniquely for the rendering loop
+      setElementID(elementID + 1)
+    }
+  }
+
   return (
     <div className={classes.draftWrapper}>
       <div className={classes.feedbackContainerHeader}>
@@ -171,6 +216,12 @@ export default function Feedback(argument) {
             >
               Text
             </button>
+            <button
+              className={`${classes.elBtns}  ${selectedPointer === "Line" ? classes.selected : ''}`}
+              onClick={() => setSelectedPointer("Line")}
+            >
+              Line
+            </button>
           </div>
         </div>
         <div
@@ -180,7 +231,9 @@ export default function Feedback(argument) {
           {imagePath ? (
             <div
               className={`${classes.imageContainer} ${classes.centerAlign}`}
-              onClick={addNewElement}
+              onClick={e => selectedPointer !== "Line" ? addNewElement(e) : e.stopPropagation()}
+              onMouseDown={e => selectedPointer === "Line" ? handleEvent(e) : e.stopPropagation()}
+              onMouseUp={e => selectedPointer === "Line" ? handleEvent(e) : e.stopPropagation()}
               ref={imageParentRef}
             >
               <img
@@ -200,7 +253,7 @@ export default function Feedback(argument) {
                       selected={el.selected}
                       onSelect={makeSelected}
                     />
-                  ) : (
+                  ) : el.type === "Textarea" ? (
                     <CommentTextArea
                       key={el.id}
                       id={el.id}
@@ -211,7 +264,17 @@ export default function Feedback(argument) {
                       imgParentRef={imageParentRef}
                       imgScrollRef={imageScrollOwnerRef}
                     />
-                  )
+                  ) : <CommentLine
+                    key={el.id}
+                    id={el.id}
+                    initialLeftOffset={el.initialLeftOffset}
+                    initialTopOffset={el.initialTopOffset}
+                    finalLeftOffset={el.finalLeftOffset}
+                    finalTopOffset={el.finalTopOffset}
+                    dragEnd={onLineDragEnd}
+                    imgParentRef={imageParentRef}
+                    imgScrollRef={imageScrollOwnerRef}
+                  />
                 )}
               </svg>
             </div>
